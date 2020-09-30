@@ -1,0 +1,45 @@
+/* For Browse Profiles */
+
+div.profile__card__container {
+    max-width: 800px;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0px 25px;
+    margin: 15px 50px 30px 20px;
+    background-color: rgba(43, 32, 36, .1);
+    border-radius: 15px;
+}
+
+
+div.profile__column {
+    height: 90vh;
+    overflow: scroll;
+}
+
+div.profile__column::-webkit-scrollbar {
+    display: none;
+}
+
+.profile__card {
+    margin: 15px auto;
+    padding: 0px 25px;
+    border: none;
+    border-radius: 10px;
+    height: 250px;
+    width: 200px;
+    /* background: 
+        linear-gradient(to top, rgba(236, 16, 16, 0.4), 10%, rgba(236, 16, 16, 0.0)); */
+    background-color: rgba(43, 32, 36, .2);
+}
+
+.profile__card__text {
+    text-align: center;
+}
+
+.profile__image {
+    margin-bottom: 10px;
+}
+
+.occupation {
+    font-size: small;
+}

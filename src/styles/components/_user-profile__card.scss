@@ -1,0 +1,25 @@
+/* Current Users profile card */
+.card.user__profile__card {
+    /* background: 
+        linear-gradient(to top, rgba(236, 16, 16, 0.4), 10%, rgba(236, 16, 16, 0.0)); */
+
+    background-color: rgba(43, 32, 36, .2);
+    color: #2b2024;
+    margin-top: 34px;
+    padding: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 275px;
+    width: 225px;
+    border: none;
+    border-radius: 10px;
+}
+
+.profile__image {
+    height: 175px;
+    width: 150px;
+    object-fit:cover;
+    border-radius: 100%;
+    margin-top: 10px;
+}
