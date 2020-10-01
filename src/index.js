@@ -3,17 +3,20 @@ import ReactDOM from 'react-dom';
 import {BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import App from './app';
-import Landing from './pages/Landing';
-import Home from './pages/Home';
-import ProfileDetail from './pages/ProfileDetail';
-import Browse from './pages/Browse';
+
+
+// Redux
+import { Provider } from 'react-redux';
+import store from './store';
 
 import 'normalize.css/normalize.css'
 import './styles/styles.scss';
 
 ReactDOM.render(
-    <Router>
-        <App />
-    </Router>,
+    <Provider store={store}>
+        <Router>
+            <App />
+        </Router>
+    </Provider>,
     document.getElementById('root')
 );
