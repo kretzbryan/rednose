@@ -10,20 +10,34 @@ const Login = () => {
         password: ''
     })
 
+    const { username, password } = formData
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        })
+    }
+
+    const onSubmit = async e => {
+        e.preventDefault();
+        const user = { 
+            username
+        }
+    }
+
     return (
         <Fragment>
-            <form action='/login' method='POST'>
+            <form onSubmit={onSubmit} method='POST'>
                 <div className="form-group">
-                    <input type="text" name='username' placeholder='Username'/>
+                    <input type="text" name='username' onChange={handleChange} placeholder='Username'/>
                 </div>
                 <div className="form-group">
-                    <input type="password" name='password' placeholder='Password'/>
+                    <input type="password" name='password' onChange={handleChange} placeholder='Password'/>
                 </div>
-                <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" className="btn btn-primary">Log In</button>
-                </div>
+                <button type="submit" className="btn btn-primary">Log In</button>
             </form>
         </Fragment>
     )
 }
+
+export default Login;
