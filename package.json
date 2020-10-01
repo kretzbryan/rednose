@@ -23,6 +23,7 @@
     "babel-preset-react": "6.24.1",
     "css-loader": "^4.2.1",
     "file-loader": "^6.0.0",
+    "http-proxy-middleware": "^1.0.5",
     "live-server": "^1.2.1",
     "moment": "^2.27.0",
     "node-sass": "^4.14.1",
@@ -44,6 +45,5 @@
   },
   "devDependencies": {
     "webpack-cli": "^3.3.12"
-  },
-  "proxy": "http://localhost:4000"
+  }
 }

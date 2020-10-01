@@ -1,6 +1,8 @@
 import React, { useState, Fragment } from 'react';
 import axios from 'axios';
 
+axios.defaults.baseURL = 'http://localhost:4000'
+
 
 const Register = () => {
     const [formData, setFormData] = useState({
