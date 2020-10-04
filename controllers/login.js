@@ -5,30 +5,37 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const auth = require('../middleware/auth')
+const { check, validationResult } = require('express-validator');
 
-router.get('/', auth, async (req, res) => {
-    const { username, password } = req.body;
+router.post('/', [
+    check('username', 'Please include a valid username').exists(),
+    check('password', 'Password required').exists()
+], async (req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    const { username, password } = req.body
     try {
 
-        const foundUser = await db.User.findOne({username});
-        if (!foundUser) {
-            return res.status(400).json({message:'Password or email incorrect.'})
+        const user = await db.User.findOne({username});
+        if (!user) {
+            return res.status(400).json({msg:'Password or email incorrect.'})
         }
-        const match = await bcrypt.compare(password, foundUser.password);
+        const match = await bcrypt.compare(password, user.password);
         if (!match) {
-            return res.status(400).json({message:'Password or email incorrect.'})
+            return res.status(400).json({msg:'Password or email incorrect.'})
         }
         const payload = {
             user: {
-                id: foundUser._id
+                id: user.id
             }
         }
-        
         jwt.sign(payload, config.get('jwtSecret'),
         {expiresIn: 36000 },
         (err, token) => {
             if(err) throw err;
-            res.json({ token})
+            res.json({ token })
         })
     } catch(err) {
         res.send({message: 'Internal Server Error'})
@@ -36,3 +43,4 @@ router.get('/', auth, async (req, res) => {
 })
 
 module.exports = router;
+
