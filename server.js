@@ -37,6 +37,7 @@ app.use(
 
 app.use('/', controllers.landing);
 app.use('/register', controllers.register);
+app.use('/login', controllers.login)
 app.use('/home', controllers.home);
 app.use('/profile', controllers.profile);
 app.use('/faq', controllers.faq);

@@ -1,10 +1,8 @@
 const express = require('express');
-const mongo = require('mongodb')
 const router = express.Router();
 const db = require('../models');
-const mongoose= require('mongoose')
 const bcrypt = require('bcryptjs');
-const { check, validationResult } = require('express-validator/check')
+const { check, validationResult } = require('express-validator')
 
 
 
@@ -13,7 +11,7 @@ router.post('/', [
     check('firstName', 'First Name is required').not().isEmpty(),
     check('lastName', 'Last Name is required').not().isEmpty(),
     check('email', 'Please include a valid email').isEmail(),
-    check('password', 'Please enter a password with 6 or more characters'). isLength({ min: 6 })
+    check('password', 'Please enter a password with 6 or more characters').isLength({ min: 6 })
 ], async (req,res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()) {
@@ -36,7 +34,7 @@ router.post('/', [
         console.log(err.message),
         res.status(500).send('Internal Server Error')
     } 
-})
+});
 
 
 module.exports = router;
