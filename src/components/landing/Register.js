@@ -1,10 +1,13 @@
 import React, { useState, Fragment } from 'react';
-import axios from 'axios';
+import { connect } from 'react-redux';
+import { setAlert } from '../../actions/alert';
+import { register } from '../../actions/auth';
+import PropTypes from 'prop-types'
 
-axios.defaults.baseURL = 'http://localhost:4000'
 
 
-const Register = () => {
+
+const Register = ({ setAlert, register }) => {
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -25,28 +28,17 @@ const Register = () => {
     const onSubmit =  async e => {
         e.preventDefault();
         if (password !== password2) {
-            console.log('Does not match')
+            setAlert('Does not match', 'danger')
         } else {
-            const newUser = {
-                firstName,
-                lastName,
-                username,
-                email,
-                password
-            }
-            try {
-                const config = {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }
-                const body = JSON.stringify(newUser);
-
-                const res = await axios.post('/register', body, config);
-                console.log(res.data)
-            } catch (err) {
-                console.log(err)
-            }
+           register({ firstName, lastName, username, email, password })
+           setFormData({
+               firstName: '',
+               lastName: '',
+               username: '',
+               email: '',
+               password: '',
+               password2: ''
+           })
         }
     }
 
@@ -80,7 +72,12 @@ const Register = () => {
     )
 };
 
-export default Register;
+Register.propTypes = {
+    setAlert: PropTypes.func.isRequired,
+    register: PropTypes.func.isRequired,
+}
+
+export default connect(null, { setAlert, register })(Register);
 
 /* <div className="modal-content">
             <div className="modal-header">
