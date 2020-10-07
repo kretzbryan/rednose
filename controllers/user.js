@@ -1,13 +1,14 @@
-
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const db = require('../models');
+const config = require('config');
+const jwt = require('jsonwebtoken');
 const auth = require('../middleware/auth');
 const { check, validationResult } = require('express-validator');
 
 
-router.post('/register', [
+router.post('/', [
     check('firstName', 'First Name is required').not().isEmpty(),
     check('lastName', 'Last Name is required').not().isEmpty(),
     check('email', 'Please include a valid email').isEmail(),
@@ -36,26 +37,43 @@ router.post('/register', [
     } 
 });
 
-router.get('/:id', auth,  async (req, res) => {
+router.post('/login',  [
+        check('username', 'Please include a valid username').exists(),
+        check('password', 'Password required').exists()
+], async (req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    const { username, password } = req.body
     try {
-        const foundProfile = await db.User.findById(req.params.id).select('-password').populate('posts').populate('gigs');
-        const currentUser = await db.User.findById(req.session.currentUser.id)
-        res.status(200).json({currentUser: currentUser, profile: foundProfile})
+
+        const user = await db.User.findOne({username});
+        if (!user) {
+            return res.status(400).json({msg:'Password or email incorrect.'})
+        }
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) {
+            return res.status(400).json({msg:'Password or email incorrect.'})
+        }
+        const payload = {
+            user: {
+                id: user.id
+            }
+        }
+        jwt.sign(payload, config.get('jwtSecret'),
+        {expiresIn: 36000 },
+        (err, token) => {
+            if(err) throw err;
+            res.json({ token })
+        })
     } catch(err) {
-        console.log(err)
-        res.status(500).send('Server error')
-}
+        res.send({message: 'Internal Server Error'})
+    }
 })
 
-router.delete('/delete/:id', async (req, res) => {
-    try {
-        const deletedUser = await db.User.findByIdAndDelete(req.params.id);
-        const deletedPosts = await db.Post.remove({ author: deletedUser._id });
-        const deletedGigs = await db.Gig.remove({ author: deletedUser._id });
-    } catch (err) {
-        console.log(err);
-    }
 
+router.delete('/logout', async function(req, res){
 })
 
 module.exports = router;

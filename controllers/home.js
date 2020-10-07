@@ -17,7 +17,7 @@ const conn = mongoose.createConnection(mongoURI);
 
 
 // User Home Page
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
         try {
             const currentUser = await db.User.findById(req.user.id).select('-password');
             const allPosts = await db.Post.find({}).populate('author');
