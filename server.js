@@ -19,15 +19,14 @@ app.set('view engine', 'ejs');
 
 
 
-app.use('/', controllers.landing);
-app.use('/register', controllers.register);
-app.use('/login', controllers.login)
-app.use('/home', controllers.home);
-app.use('/profile', controllers.profile);
-app.use('/faq', controllers.faq);
-app.use('/profiles', controllers.profiles);
-app.use('/posts', controllers.posts);
-app.use('/gigs', controllers.gigs);
+app.use('/api/auth', controllers.auth);
+app.use('/api/home', controllers.home);
+app.use('/api/user', controllers.user);
+app.use('/api/profile', controllers.profile);
+app.use('/api/faq', controllers.faq);
+app.use('/api/profiles', controllers.profiles);
+app.use('/api/posts', controllers.posts);
+app.use('/api/gigs', controllers.gigs);
 
 app.listen( PORT, () => {
     console.log(`Now on port ${PORT}`)
