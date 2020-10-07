@@ -6,7 +6,7 @@ import Home from '../pages/Home';
 import ProfileDetail from '../pages/ProfileDetail';
 import Browse from '../pages/Browse'
 
-const Routes = (props) => {
+const Routes = () => {
     return (
         <Switch>
             <Route exact path ='/' component={Landing}/>

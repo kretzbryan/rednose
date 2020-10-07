@@ -1,0 +1,10 @@
+export const SET_ALERT = 'SET_ALERT';
+export const REMOVE_ALERT = 'REMOVE_ALERT';
+export const REGISTER_CONFIRMED = 'REGISTER_CONFIRMED';
+export const REGISTER_DENIED = 'REGISTER_DENIED';
+export const USER_LOADED = 'USER_LOADED';
+export const AUTH_DENIED = 'AUTH_DENIED';
+export const LOGIN_CONFIRMED = 'LOGIN_CONFIRMED';
+export const LOGIN_DENIED = 'LOGIN_DENIED';
+export const LOGOUT = 'LOGOUT';
+
