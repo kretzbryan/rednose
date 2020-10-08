@@ -10,17 +10,13 @@ import setAuthToken from './utils/setAuthToken';
 import { loadUser } from './actions/auth';
 
 
-axios.defaults.baseURL = 'http://localhost:4000';
-
-
-
 
 const App = () => {
     useEffect(() => {
         if (localStorage.token) {
             setAuthToken(localStorage.token)
         }
-        loadUser();
+        store.dispatch(loadUser());
     }, [])
 
     return (

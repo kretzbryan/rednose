@@ -7,4 +7,7 @@ export const AUTH_DENIED = 'AUTH_DENIED';
 export const LOGIN_CONFIRMED = 'LOGIN_CONFIRMED';
 export const LOGIN_DENIED = 'LOGIN_DENIED';
 export const LOGOUT = 'LOGOUT';
+export const GET_PROFILE = 'GET_PROFILE';
+export const PROFILE_ERROR = 'PROFILE_ERROR';
+
 
