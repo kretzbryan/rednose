@@ -10,11 +10,12 @@ const connectDB = db.connectDB;
 
 connectDB();
 
+
+app.use(cors());
 app.use(express.json({extended:false}))
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(methodOverride('_method'));
 app.use(express.static(__dirname + '/public'));
-app.use(cors());
 app.set('view engine', 'ejs');
 
 

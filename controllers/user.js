@@ -8,7 +8,7 @@ const auth = require('../middleware/auth');
 const { check, validationResult } = require('express-validator');
 
 
-router.post('/', [
+router.post('/register', [
     check('firstName', 'First Name is required').not().isEmpty(),
     check('lastName', 'Last Name is required').not().isEmpty(),
     check('email', 'Please include a valid email').isEmail(),
@@ -72,7 +72,16 @@ router.post('/login',  [
     }
 })
 
-
+router.get('/home', auth, async (req, res) => {
+    try {
+        const user = await db.User.findById(req.user.id).select('-password');
+        res.json({ user })
+    } catch (err) {
+        if(err) {
+            res.status(500).json({message: 'An error occurred. Please try again .'})
+        }
+    }
+})
 router.delete('/logout', async function(req, res){
 })
 
