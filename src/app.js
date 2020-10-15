@@ -11,11 +11,12 @@ import { loadUser } from './actions/auth';
 
 
 
+if (localStorage.token) {
+    setAuthToken(localStorage.token)
+}
+
 const App = () => {
     useEffect(() => {
-        if (localStorage.token) {
-            setAuthToken(localStorage.token)
-        }
         store.dispatch(loadUser());
     }, [])
 

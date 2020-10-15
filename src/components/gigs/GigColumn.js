@@ -1,31 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import GigCard from './GigCard';
 import { register } from '../forms/forms';
+import CreateGigContainer from '../gigs/CreateGigContainer';
+import { connect } from 'react-redux';
+import { getGigs } from '../../actions/gig';
+import PropTypes from 'prop-types';
 
-const { firstName, lastName, username, email, password } = register;
 
-const GigColumn = () => {
-    const [ gigs, setGigs ] = useState([]);
-
-    const generateGigs = (gigs) => {
-        return gigs.map((gig) => {
-            return <GigCard title={gig.title} description={gig.description} />
-        })
-    }
-
+const GigColumn = ({ getGigs, gig: { gigs } }) => {
     useEffect(() => {
-        fetch('http://localhost:4000/gigs')
-        .then((res) =>  res.json())
-        .then((json) => {
-            setGigs(json.gigs)
-        })
-    }, [])
-
-
+       getGigs()
+    }, [getGigs])
     return (
     <div className='gig__column'>
-        {generateGigs(gigs)}
+        <CreateGigContainer />
+        { gigs.map( gig => (
+            <GigCard key={gig._id} gig={gig} />
+        ))}
     </div>
 )}
 
-export default GigColumn;
+GigColumn.propTypes = {
+    getGigs: PropTypes.func.isRequired,
+    gig: PropTypes.object.isRequired
+}
+
+const mapStateToProps = state => ({
+    gig: state.gig
+})
+
+export default connect(mapStateToProps, { getGigs })(GigColumn);

@@ -1,28 +1,35 @@
 import React,{ useState, useEffect } from 'react';
+import { getPosts } from '../../actions/post';
 import CreatePostContainer from './CreatePostContainer';
 import PostContainer from './PostContainer';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 
-const PostColumn = props => {
-    const [posts, setPost] = useState([]);
-
+const PostColumn = ({ getPosts, post: { posts, loading} }) => {
     useEffect(() => {
-        fetch('http://localhost:4000/posts')
-        .then((res) => res.json())
-        .then((json) => {
-            setPost(json.posts)
-        })
-    }, [])
+        getPosts()
+    }, [getPosts])
 
     return (
     <div className="post__column">
         <CreatePostContainer />
-        <PostContainer />
+        {posts.map(post => (
+            <PostContainer key={post._id} post={post} />
+        ))}
     </div>
 )}
 
+PostColumn.propTypes = {
+    getPosts: PropTypes.func.isRequired,
+    post: PropTypes.object.isRequired
+}
 
-export default PostColumn;
+const mapStateToProps = state => ({
+    post: state.post
+})
+
+export default connect( mapStateToProps, { getPosts } )(PostColumn);
 
 /* 
                         <!-- Edit Post Modal -->

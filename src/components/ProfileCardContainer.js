@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import ProfileCard from './ProfileCard';
+import  { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
-const ProfileCardContainer = () => {
-    const [profiles, setProfiles] = useState([]);
+
+const ProfileCardContainer = ({ profile: { profiles, loading } }) => {
 
     const generateProfileCards = (profiles) => {
         return profiles.map((profile) => {
@@ -10,20 +12,20 @@ const ProfileCardContainer = () => {
         })
     }
 
-    useEffect(() => {
-        fetch('http://localhost:4000/profiles')
-        .then((res) => res.json())
-        .then((json) => {
-            setProfiles(json.profiles)
-        })
-    }, []) 
     
     return (
-
     <div className="profile__card__container">
-        {generateProfileCards(profiles)}
+        {!loading && generateProfileCards(profiles)}
     </div>
 )}
 
-export default ProfileCardContainer;
+ProfileCardContainer.propTypes = {
+    profile: PropTypes.object.isRequired,
+}
+
+const mapStateToProps = state => ({
+    profile: state.profile
+})
+
+export default connect(mapStateToProps)(ProfileCardContainer);
 

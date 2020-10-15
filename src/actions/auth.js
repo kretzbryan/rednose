@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { setAlert } from './alert'
-import { REGISTER_CONFIRMED, REGISTER_DENIED, USER_LOADED, AUTH_DENIED, LOGIN_CONFIRMED, LOGIN_DENIED, LOGOUT } from './types';
+import { REGISTER_CONFIRMED, REGISTER_DENIED, USER_LOADED, AUTH_DENIED, LOGIN_CONFIRMED, LOGIN_DENIED, LOGOUT, CLEAR_PROFILE } from './types';
 import setAuthToken from '../utils/setAuthToken';
 import api from '../utils/api';
 
@@ -35,7 +35,7 @@ export const register = ({ firstName, lastName, username, email, password }) => 
     const body = JSON.stringify({ firstName, lastName, username, email, password });
 
     try {
-        const res = await api.post('user', body, config);
+        const res = await api.post('user/register', body, config);
         dispatch(setAlert('Register Success!', 'success'));
         dispatch({
             type: REGISTER_CONFIRMED
@@ -77,5 +77,6 @@ export const login = ( username, password ) => async dispatch => {
 }
 
 export const logout = () => async dispatch => {
+    dispatch({ type: CLEAR_PROFILE })
     dispatch({ type: LOGOUT })
 }

@@ -8,6 +8,17 @@ export const LOGIN_CONFIRMED = 'LOGIN_CONFIRMED';
 export const LOGIN_DENIED = 'LOGIN_DENIED';
 export const LOGOUT = 'LOGOUT';
 export const GET_PROFILE = 'GET_PROFILE';
+export const GET_PROFILES = 'GET_PROFILES';
+export const CLEAR_PROFILE = 'CLEAR_PROFILE';
 export const PROFILE_ERROR = 'PROFILE_ERROR';
-
+export const ADD_POST = 'ADD_POST';
+export const REMOVE_POST = 'REMOVE_POST';
+export const EDIT_POST = 'EDIT_POST';
+export const POST_ERROR = 'POST_ERROR';
+export const GET_POSTS = 'GET_POSTS';
+export const DELETE_POST = 'DELETE_POST';
+export const ADD_GIG = 'ADD_GIG';
+export const GIG_ERROR = 'GIG_ERROR';
+export const GET_GIGS = 'GET_GIGS';
+export const DELETE_GIG = 'DELETE_GIG';
 

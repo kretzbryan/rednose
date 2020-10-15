@@ -2,7 +2,6 @@ import axios from 'axios';
 import store from '../store';
 import { LOGOUT } from '../actions/types'
 
-axios.defaults.baseURL = 'http://localhost:4000';
 
 const api = axios.create({
     baseURL: 'http://localhost:4000/api',

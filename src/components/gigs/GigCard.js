@@ -2,17 +2,26 @@ import React from 'react';
 import GigHeader from './GigHeader';
 import GigDescription from './GigDescription';
 import GigOptions from './GigOptions';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
-const GigCard = (props) => (
+const GigCard = ({ auth, gig: { title, location, text, _id, user } }) => (
     <div className="row card gig__container">
-        <GigHeader text={props.title} />
-        <GigDescription text={props.description} />
-        <GigOptions />
+        <GigHeader title={title} location={location}/>
+        <GigDescription text={text} />
+        { auth.isAuthenticated && !auth.loading && auth.user._id === user &&  (<GigOptions />)}
     </div>
 )
 
+GigCard.propTypes = {
+    auth: PropTypes.object.isRequired
+}
 
-export default GigCard;
+const mapStateToProps = state => ({
+    auth: state.auth
+})
+
+export default connect(mapStateToProps)(GigCard);
 
 
 /* 

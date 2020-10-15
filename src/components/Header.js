@@ -6,7 +6,7 @@ import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, NavItem, Navbar, 
 import auth from '../reducers/auth';
 
 
-const Header = ({ auth: { isAuthenticated, loading }, logout }) => {
+const Header = ({ auth: { isAuthenticated, loading, user}, logout }) => {
 
     const authLinks = (
         <Fragment>
@@ -14,7 +14,7 @@ const Header = ({ auth: { isAuthenticated, loading }, logout }) => {
                 <NavLink className="nav-link" href="/home">Home <span className="sr-only">(current)</span></NavLink>
             </NavItem>
             <NavItem className="nav-item">
-                <NavLink className="nav-link" href="/profile/<%= currentUser._id %>"> View Profile</NavLink>
+                <NavLink className="nav-link"  to={ isAuthenticated && !loading && user && `/profile${user._id}`} > View Profile</NavLink>
             </NavItem>
             <NavItem className="nav-item">
                 <NavLink className="nav-link" href="/browse">Browse Profiles</NavLink>
@@ -49,7 +49,9 @@ const Header = ({ auth: { isAuthenticated, loading }, logout }) => {
 }
 
 const mapStateToProps = state => ({
-    auth: state.auth
+    auth: state.auth,
+    profile: state.profile,
+
 })
 
 Header.propTypes = {
