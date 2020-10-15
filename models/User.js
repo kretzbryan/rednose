@@ -15,14 +15,6 @@ const userSchema = new mongoose.Schema({
         required: false
     }],
     insurance: {type:String, required: false},
-    posts: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Post'
-    }],
-    gigs: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Gig'
-    }],
     following: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

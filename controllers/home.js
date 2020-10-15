@@ -2,15 +2,12 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const crypto = require('crypto');
-const Grid = require('gridfs-stream');
 const db = require('../models');
-const mongo = require('mongodb')
-const mongoose = require('mongoose');
 const auth = require('../middleware/auth')
+const { check, validationResult } =  require('express-validator');
+const { globalAgent } = require('http');
 
 
-const mongoURI = 'mongodb://localhost:27017/circusnetwork';
-const conn = mongoose.createConnection(mongoURI);
 
 
 
@@ -23,49 +20,80 @@ router.get('/', auth, async (req, res) => {
             const allPosts = await db.Post.find({}).populate('author');
             const allGigs = await db.Gig.find({}).populate('author');
             // res.status(200).json({gigs: allGigs, posts: allPosts})
-            res.json({ currentUser: currentUser, posts: allPosts, gigs: allGigs })
+            res.json({ currentUser: currentUser})
         } catch (err) {
             if(err) {
                 res.status(500).json({message: 'An error occurred. Please try again .'})
             }
         }
-        
 })
 
 
 
 // Creates a post with author id, adds post id to User.posts
-router.post('/add-post', (req, res) => {
-    db.Post.create(req.body, (err, addedPost) => {
-        if (err) {
-            console.log(err);
-        } else {
-            db.User.findById(req.session.currentUser.id, (err, foundUser) => {
-                if(err) {
-                    console.log(err);
-                } else {
-                    foundUser.posts.push(addedPost.id);
-                    foundUser.save();
-                    res.redirect('/home')
-                }
-            })
+router.post('/add-post', 
+    [
+        auth,
+        [
+            check('text', 'text is required').not().isEmpty()
+        ]
+    ], async (req, res) => {
+        const errors = validationResult(req);
+
+        if(!errors.isEmpty()){
+            return res.status(400).json({ errors: errors.array() })
         }
-    })
+
+        try {
+            const user = await db.User.findById(req.user.id).select('-password');
+            const newPost = new db.Post({
+                text: req.body.text,
+                name: `${user.firstName} ${user.lastName}`,
+                user: req.user.id
+            });
+            const post = await newPost.save();
+            res.json(post)
+        } catch (err) {
+            if(err) {
+            return res.status(500).send('server error')
+            }
+        }
+      
 })
 
 
 // Creates gig with author Id, adds gig id to user.Gigs
-router.post('/add-gig', async (req, res) => {
-    try {
-        const gig = await db.Gig.create(req.body);
-        const author = await db.User.findById(req.user.id);
-        author.gigs.push(gig.id);
-        author.save();
-        gig.author = (author.id);
-        gig.save();
-    } catch(err) {
-        res.status(500).json({ msg: 'An error occured, please try again.' })
-    }
+router.post('/add-gig',
+    [
+            auth,
+            [
+                check('title', 'title is required').not().isEmpty(),
+                check('location', 'location required').not().isEmpty(),
+                check('text', 'text is required').not().isEmpty(),
+            ]
+    ] , async (req, res) => {
+
+        const errors = validationResult(req);
+
+        if(!errors.isEmpty()) {
+            return res.status(400).json({errors: errors.array() });
+        }
+
+        try {
+            const user = await db.User.findById( req.user.id ).select('-password');
+
+            const newGig = new db.Gig({
+                title: req.body.title,
+                location: req.body.location,
+                text: req.body.text,
+                name: `${user.firstName} ${user.lastName}`,
+                user: req.user.id
+            })
+            const gig = newGig.save();
+            res.json(gig)
+        } catch(err) {
+            res.status(500).json({ msg: 'An error occured, please try again.' })
+        }
 
 })
 
@@ -103,40 +131,29 @@ router.put('/edit-post/:id', (req, res) => {
 
 
 // Delete Gig
-router.delete('/delete-gig/:id', (req, res) => {
-    db.Gig.findByIdAndDelete(req.params.id, (err, deletedGig) => {
-        if(err) {
-            console.log(err)
-        } else {
-            db.User.findById(deletedGig.author, (err, foundUser) => {
-                if(err) {
-                    console.log(err);
-                } else {
-                    foundUser.gigs.remove(deletedGig)
-                    foundUser.save();
-                    res.redirect('/home');
-                }
-            })
+router.delete('/delete-gig/:id', auth, async (req, res) => {
+    try {
+        const gig = await db.Gig.findById(req.params.id);
+        
+        if(gig.user.toString() !== req.user.id) {
+            return res.status(401).json({ msg: 'User not authorized' })
         }
-    })
+    } catch (err) {
+        res.status(500).json('Internal Server Error')
+    }
 })
 
-router.delete('/delete-post/:id', (req, res) => {
-    db.Post.findByIdAndDelete(req.params.id, (err, deletedPost) => {
-        if(err) {
-            console.log(err)
-        } else {
-            db.User.findById(deletedPost.author, (err, foundUser) => {
-                if(err) {
-                    console.log(err);
-                } else {
-                    foundUser.posts.remove(deletedPost)
-                    foundUser.save();
-                    res.redirect('/home');
-                }
-            })
+router.delete('/delete-post/:id', auth, async (req, res) => {
+    try {
+        const post = await db.Post.findById(req.params.id);
+        if (post.user.toString() !== req.user.id) {
+            return res.status(401).json('User not authorized')
         }
-    })
+        await post.remove();
+        res.json({ msg: 'Post removed' })
+    } catch (err) {
+        
+    }
 })
 
 
