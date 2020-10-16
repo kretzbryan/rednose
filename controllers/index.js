@@ -7,5 +7,5 @@ module.exports = {
     user: require('./user'),
     posts: require('./posts'),
     gigs: require('./gigs'),
-    auth: require('auth')
+    auth: require('./auth')
 }
