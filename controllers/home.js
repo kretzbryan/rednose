@@ -73,7 +73,7 @@ router.post('/add-gig',
                 check('text', 'text is required').not().isEmpty(),
             ]
     ] , async (req, res) => {
-
+        console.log(req.body)
         const errors = validationResult(req);
 
         if(!errors.isEmpty()) {
@@ -90,7 +90,7 @@ router.post('/add-gig',
                 name: `${user.firstName} ${user.lastName}`,
                 user: req.user.id
             })
-            const gig = newGig.save();
+            const gig = await newGig.save();
             res.json(gig)
         } catch(err) {
             res.status(500).json({ msg: 'An error occured, please try again.' })
