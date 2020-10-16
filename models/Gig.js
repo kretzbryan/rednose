@@ -5,7 +5,7 @@ const gigSchema = new mongoose.Schema({
     location: {type: String, required: true},
     text: {type: String, required: true},
     name: {type: String, require: true},
-    author: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     } 
