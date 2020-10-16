@@ -14,4 +14,18 @@ router.get('/', auth, async (req, res) => {
     }
 })
 
+router.put('/:id', auth, async (req, res) => {
+     try {
+        const post = await db.Post.findByIdAndUpdate(
+            req.params.id, 
+            req.body, 
+            {new:true}
+        )
+        await post.save();
+        console.log(post)
+        res.json(post)
+     } catch (err) {
+         res.json(err.message)
+     }
+})
 module.exports = router;
