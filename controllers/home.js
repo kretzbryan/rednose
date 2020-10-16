@@ -6,6 +6,7 @@ const db = require('../models');
 const auth = require('../middleware/auth')
 const { check, validationResult } =  require('express-validator');
 const { globalAgent } = require('http');
+const { findByIdAndUpdate } = require('../models/Gig');
 
 
 
@@ -108,14 +109,25 @@ router.put('/edit-profile/:id', (req, res) => {
     })
 })
 
-router.put('/edit-gig/:id', (req, res) => {
-    db.Gig.findByIdAndUpdate(req.params.id, req.body, {new:true}, (err, updatedGig) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.redirect('/home');
-        }
-    })
+router.put('/edit-gig/:id', auth, async (req, res) => {
+   try {
+    const { title, location, text, user } = req.body
+        if(req.user.id !== user) {
+           res.status(401).json({ msg: 'User not Authorized'});
+       }
+        const gig  = await db.Gig.findByIdAndUpdate(
+            req.params.id, 
+            {
+                title,
+                location,
+                text
+            },
+            { new: true }
+        );
+        res.json(gig)
+   } catch (err) {
+       res.status(500).json({ err })
+   }
 })
 
 router.put('/edit-post/:id', (req, res) => {
@@ -153,6 +165,7 @@ router.delete('/delete-post/:id', auth, async (req, res) => {
         res.json({ msg: 'Post removed' })
     } catch (err) {
         
+       res.status(500).json({ err })
     }
 })
 
