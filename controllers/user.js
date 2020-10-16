@@ -37,14 +37,11 @@ router.post('/register', [
     } 
 });
 
-router.post('/login',  [
-        auth,
-        [
+router.post('/login', [
             check('username', 'Please include a valid username').exists(),
             check('password', 'Password required').exists()
-        ]
-    ], 
-    async (req, res) => {
+        ], 
+        async (req, res) => {
         const errors = validationResult(req);
         if(!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() })
