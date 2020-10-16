@@ -4,7 +4,8 @@ module.exports = {
     profiles: require('./profiles'),
     profile: require('./profile'),
     faq: require('./faq'),
+    user: require('./user'),
     posts: require('./posts'),
     gigs: require('./gigs'),
-    user: require('./user')
+    auth: require('auth')
 }
