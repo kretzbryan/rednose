@@ -10,9 +10,8 @@ const auth = require('../middleware/auth')
 // Shows all profiles with the exception of the current User
 router.get('/', auth, async (req, res) => {
     try {
-        const profiles = await db.User.find();
-        const id = req.user.id
-        res.json({profiles, id})
+        const profiles = await db.User.find({}).select('-password') 
+        res.json({ profiles, user: req.user.id })
     } catch(err) {
         res.status(500).send({ msg: 'An error occured.' })
     }

@@ -5,8 +5,6 @@ const crypto = require('crypto');
 const db = require('../models');
 const auth = require('../middleware/auth')
 const { check, validationResult } =  require('express-validator');
-const { globalAgent } = require('http');
-const { findByIdAndUpdate } = require('../models/Gig');
 
 
 
@@ -40,7 +38,6 @@ router.post('/add-post',
         ]
     ], async (req, res) => {
         const errors = validationResult(req);
-
         if(!errors.isEmpty()){
             return res.status(400).json({ errors: errors.array() })
         }
@@ -53,10 +50,12 @@ router.post('/add-post',
                 user: req.user.id
             });
             const post = await newPost.save();
+            await user.posts.push(post._id);
+            await user.save()
             res.json(post)
         } catch (err) {
             if(err) {
-            return res.status(500).send('server error')
+            return res.status(500).json(err)
             }
         }
       
@@ -91,6 +90,8 @@ router.post('/add-gig',
                 user: req.user.id
             })
             const gig = await newGig.save();
+            await user.gigs.push(gig._id);
+            await user.save();
             res.json(gig)
         } catch(err) {
             res.status(500).json({ msg: 'An error occured, please try again.' })
