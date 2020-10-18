@@ -11,7 +11,7 @@ const auth = require('../middleware/auth')
 router.get('/', auth, async (req, res) => {
     try {
         const profiles = await db.User.find({}).select('-password') 
-        res.json({ profiles })
+        res.json({ profiles, user: req.user.id })
     } catch(err) {
         res.status(500).send({ msg: 'An error occured.' })
     }
