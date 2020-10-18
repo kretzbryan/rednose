@@ -37,40 +37,39 @@ router.post('/register', [
     } 
 });
 
-router.post('/login', [
-            check('username', 'Please include a valid username').exists(),
-            check('password', 'Password required').exists()
-        ], 
-        async (req, res) => {
-        const errors = validationResult(req);
-        if(!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() })
-        }
-        const { username, password } = req.body
-        try {
+router.post('/login',  [
+        check('username', 'Please include a valid username').exists(),
+        check('password', 'Password required').exists()
+], async (req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    const { username, password } = req.body
+    try {
 
-            const user = await db.User.findOne({username});
-            if (!user) {
-                return res.status(400).json({msg:'Password or email incorrect.'})
-            }
-            const match = await bcrypt.compare(password, user.password);
-            if (!match) {
-                return res.status(400).json({msg:'Password or email incorrect.'})
-            }
-            const payload = {
-                user: {
-                    id: user.id
-                }
-            }
-            jwt.sign(payload, config.get('jwtSecret'),
-            {expiresIn: 36000 },
-            (err, token) => {
-                if(err) throw err;
-                res.json({ token })
-            })
-        } catch(err) {
-            res.send({message: 'Internal Server Error'})
+        const user = await db.User.findOne({username});
+        if (!user) {
+            return res.status(400).json({msg:'Password or email incorrect.'})
         }
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) {
+            return res.status(400).json({msg:'Password or email incorrect.'})
+        }
+        const payload = {
+            user: {
+                id: user.id
+            }
+        }
+        jwt.sign(payload, config.get('jwtSecret'),
+        {expiresIn: 36000 },
+        (err, token) => {
+            if(err) throw err;
+            res.json({ token })
+        })
+    } catch(err) {
+        res.send({message: 'Internal Server Error'})
+    }
 })
 
 router.get('/home', auth, async (req, res) => {
